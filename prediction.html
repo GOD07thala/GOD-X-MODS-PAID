@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GOD X MODES</title>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 30px; background: #141414; color: white; }
+    .prediction-box { margin: 20px auto; background: #222; padding: 20px; border-radius: 10px; max-width: 400px; }
+    button { padding: 15px 30px; font-size: 16px; background: #007bff; color: white; border: none; border-radius: 5px; }
+    .result { margin-top: 20px; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h1>91 Club Two-Level Prediction</h1>
+  <div class="prediction-box">
+    <div id="level1">Level 1: -</div>
+    <div id="level2">Level 2: -</div>
+    <div class="result" id="result">Result: -</div>
+  </div>
+  <button onclick="nextPrediction()">Next</button>
+
+  <script>
+    let currentIndex = 0;
+    const predictions = localStorage.getItem("prediction_list")?.split("\n") || [];
+
+    async function checkResult(prediction) {
+      const realResult = await fetch("https://your-backend.com/api/latest-result").then(r => r.text()); // Replace with real backend
+      const [level1, level2] = prediction.split(",");
+      if (realResult.includes(level1.trim()) && realResult.includes(level2.trim())) {
+        return "WIN";
+      }
+      return "LOSS";
+    }
+
+    async function nextPrediction() {
+      if (currentIndex >= predictions.length) {
+        alert("No more predictions!");
+        return;
+      }
+      const currentPrediction = predictions[currentIndex];
+      const [level1, level2] = currentPrediction.split(",");
+      document.getElementById("level1").textContent = "Level 1: " + level1;
+      document.getElementById("level2").textContent = "Level 2: " + level2;
+
+      const result = await checkResult(currentPrediction);
+      document.getElementById("result").textContent = "Result: " + result;
+      currentIndex++;
+    }
+  </script>
+</body>
+</html>
